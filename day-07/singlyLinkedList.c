@@ -1,57 +1,53 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
 
-struct node {
+struct Node {
     int data;
-    struct node* next;
+    struct Node* next;
 };
 
-struct node* createNode(int data) {
-    struct node* n = (struct node*)malloc(sizeof(struct node));
-    n->data = data;
-    n->next = NULL;
-    return n;
+/* Insert at Begin */
+struct Node* insertAtBegin(struct Node* head, int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = head;
+    return newNode;
 }
 
-struct node* insertAtBegin(struct node* head, int data) {
-    struct node* n = createNode(data);
-    n->next = head;
-    return n;
-}
-
-struct node* insertAtEnd(struct node* head, int data) {
-    struct node* n = createNode(data);
+/* Insert at End */
+struct Node* insertAtEnd(struct Node* head, int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
 
     if (head == NULL) {
-        return n;
+        return newNode;
     }
 
-    struct node* temp = head;
-    while (temp->next != NULL) {
+    struct Node* temp = head;
+    while (temp->next != NULL)
         temp = temp->next;
-    }
-    temp->next = n;
 
-    return head;  
+    temp->next = newNode;
+
+    return head;   // ✅ correct
 }
 
-struct node* insertAfter(struct node* head, int key, int data) {
-    struct node* temp = head;
+/* Insert After */
+void insertAfter(struct Node* head, int key, int data) {
+    while (head != NULL && head->data != key)
+        head = head->next;
 
-    while (temp != NULL && temp->data != key) {
-        temp = temp->next;
+    if (head != NULL) {
+        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+        newNode->data = data;
+        newNode->next = head->next;
+        head->next = newNode;
     }
-
-    if (temp != NULL) {
-        struct node* n = createNode(data);
-        n->next = temp->next;
-        temp->next = n;
-    }
-
-    return head; 
 }
 
-void display(struct node* head) {
+/* Display */
+void Display(struct Node* head) {
     while (head != NULL) {
         printf("%d -> ", head->data);
         head = head->next;
@@ -60,13 +56,15 @@ void display(struct node* head) {
 }
 
 int main() {
-    struct node* head = NULL;
+    struct Node* head = NULL;
 
-    head = insertAtBegin(head, 5);
-    head = insertAtEnd(head, 7);
-    head = insertAtEnd(head, 8);
-    head = insertAfter(head, 5, 6);
+    head = insertAtEnd(head, 5);
+    head = insertAtEnd(head, 10);
+    head = insertAtEnd(head, 20);
+    head = insertAtEnd(head, 30);
 
-    display(head);
+    insertAfter(head, 5, 15);
+
+    Display(head);
     return 0;
 }

@@ -4,6 +4,7 @@
 struct Node {
     int data;
     struct Node* next;
+    struct Node* prev;
 };
 
 /* Insert at Beginning */
@@ -12,16 +13,17 @@ struct Node* insertAtBegin(struct Node* head, int data) {
     newNode->data = data;
 
     if (head == NULL) {
-        newNode->next = newNode;   // points to itself
+        newNode->next = newNode;
+        newNode->prev = newNode;
         return newNode;
     }
 
-    struct Node* temp = head;
-    while (temp->next != head)
-        temp = temp->next;
+    struct Node* last = head->prev;
 
     newNode->next = head;
-    temp->next = newNode;
+    newNode->prev = last;
+    head->prev = newNode;
+    last->next = newNode;
 
     return newNode;  // new head
 }
@@ -33,16 +35,16 @@ struct Node* insertAtEnd(struct Node* head, int data) {
 
     if (head == NULL) {
         newNode->next = newNode;
+        newNode->prev = newNode;
         return newNode;
     }
 
-    struct Node* temp = head;
-    
-    while (temp->next != head)
-        temp = temp->next;
+    struct Node* last = head->prev;
 
-    temp->next = newNode;
     newNode->next = head;
+    newNode->prev = last;
+    last->next = newNode;
+    head->prev = newNode;
 
     return head;
 }
@@ -58,7 +60,10 @@ void insertAfter(struct Node* head, int key, int data) {
         if (temp->data == key) {
             struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
             newNode->data = data;
+
             newNode->next = temp->next;
+            newNode->prev = temp;
+            temp->next->prev = newNode;
             temp->next = newNode;
             return;
         }
@@ -75,7 +80,7 @@ void Display(struct Node* head) {
 
     struct Node* temp = head;
     do {
-        printf("%d -> ", temp->data);
+        printf("%d <-> ", temp->data);
         temp = temp->next;
     } while (temp != head);
 
